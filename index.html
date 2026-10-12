@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baramao LP School | Accounts Portal</title><link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand-mark">B</div><div class="brand"><strong>Baramao LP School</strong><span>School management & accounts portal</span></div>
+  <button id="logoutBtn" class="button ghost hidden">Log out</button>
+</header>
+<main class="wrap">
+  <section id="loginView" class="login-panel">
+    <div class="eyebrow">SCHOOL PORTAL</div><h1>Welcome back</h1><p class="muted">Sign in with your authorised school account.</p>
+    <form id="loginForm" class="form-grid single">
+      <label>Username<input name="username" autocomplete="username" required></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+      <button class="button primary" type="submit">Sign in</button><p id="loginError" class="error"></p>
+    </form>
+    <p class="small muted">An administrator must create accounts before first use.</p>
+  </section>
+  <section id="appView" class="hidden">
+    <div class="welcome-row"><div><div class="eyebrow">SCHOOL WORKSPACE</div><h1>Dashboard</h1><p class="muted" id="userLine"></p></div><button class="button" onclick="window.print()">Print page</button></div>
+    <nav id="nav" class="nav-tabs">
+      <button data-tab="dashboard" class="active">Overview</button><button data-tab="notices">Notice board</button><button data-tab="cashbook">Cash book</button><button data-tab="vouchers">Vouchers</button><button data-tab="students">Students</button><button data-tab="meals">Meal records</button><button data-tab="reports">Reports & backup</button><button data-tab="users" class="admin-only">Users</button>
+    </nav>
+    <div id="message" role="status"></div>
+    <section id="tab-dashboard" class="tab-pane">
+      <div class="stat-grid">
+        <article class="stat-card"><span>Total receipts</span><strong id="statReceipts">₹0.00</strong><small>Cash book</small></article>
+        <article class="stat-card"><span>Total payments</span><strong id="statPayments">₹0.00</strong><small>Cash book</small></article>
+        <article class="stat-card"><span>Active students</span><strong id="statStudents">0</strong><small>Student register</small></article>
+        <article class="stat-card"><span>Meal expenditure</span><strong id="statMeal">₹0.00</strong><small>Recorded meal days</small></article>
+      </div>
+      <div class="panel"><div class="panel-heading"><div><h2>Latest notices</h2><p class="muted">Updates from the school</p></div><button class="button" data-goto="notices">Manage notices</button></div><div id="latestNotices" class="notice-list"></div></div>
+    </section>
+    <section id="tab-notices" class="tab-pane hidden">
+      <div class="panel"><div class="panel-heading"><div><h2>Notice board</h2><p class="muted">School, accounts, holidays and urgent notices</p></div></div>
+        <form id="noticeForm" class="form-grid editor accounts-only">
+          <label>Notice title<input name="title" maxlength="160" required></label><label>Category<select name="category"><option>School</option><option>Accounts</option><option>Holidays</option><option>Urgent</option></select></label>
+          <label class="full">Message<textarea name="body" rows="3" required></textarea></label><button class="button primary" type="submit">Publish notice</button>
+        </form><div id="noticeList" class="notice-list"></div>
+      </div>
+    </section>
+    <section id="tab-cashbook" class="tab-pane hidden">
+      <div class="panel"><div class="panel-heading"><div><h2>Daily cash book</h2><p class="muted">Record receipts and payments</p></div><button class="button export-btn" data-export="cashbook">Export CSV</button></div>
+        <form id="cashForm" class="form-grid editor accounts-only">
+          <label>Date<input name="entry_date" type="date" required></label><label>Voucher no.<input name="voucher_no"></label><label class="full">Particulars<input name="particulars" required></label><label>Receipt (₹)<input name="receipt" type="number" min="0" step=".01" value="0"></label><label>Payment (₹)<input name="payment" type="number" min="0" step=".01" value="0"></label><label class="full">Remarks<input name="remarks"></label><button class="button primary" type="submit">Save entry</button>
+        </form><div class="table-wrap"><table><thead><tr><th>Date</th><th>Particulars</th><th>Voucher</th><th>Receipt</th><th>Payment</th><th>Remarks</th><th class="admin-only">Action</th></tr></thead><tbody id="cashRows"></tbody></table></div>
+      </div>
+    </section>
+    <section id="tab-vouchers" class="tab-pane hidden">
+      <div class="panel"><div class="panel-heading"><div><h2>Payment vouchers</h2><p class="muted">Keep a searchable list of payments</p></div><button class="button export-btn" data-export="vouchers">Export CSV</button></div>
+        <form id="voucherForm" class="form-grid editor accounts-only"><label>Date<input name="voucher_date" type="date" required></label><label>Voucher no.<input name="voucher_no" required></label><label>Supplier name<input name="supplier"></label><label>Category<input name="category" value="General"></label><label class="full">Items / particulars<input name="particulars" required></label><label>Amount (₹)<input name="amount" type="number" min="0" step=".01" required></label><button class="button primary" type="submit">Save voucher</button></form>
+        <div class="table-wrap"><table><thead><tr><th>Date</th><th>Voucher</th><th>Supplier</th><th>Particulars</th><th>Category</th><th>Amount</th></tr></thead><tbody id="voucherRows"></tbody></table></div>
+      </div>
+    </section>
+    <section id="tab-students" class="tab-pane hidden">
+      <div class="panel"><div class="panel-heading"><div><h2>Student register</h2><p class="muted">Classes I–V</p></div><button class="button export-btn" data-export="students">Export CSV</button></div>
+        <form id="studentForm" class="form-grid editor accounts-only"><label>Admission no.<input name="admission_no" required></label><label>Student name<input name="student_name" required></label><label>Class<select name="class_name"><option>I</option><option>II</option><option>III</option><option>IV</option><option>V</option></select></label><label>Parent / guardian<input name="guardian_name"></label><button class="button primary" type="submit">Add student</button></form>
+        <div class="table-wrap"><table><thead><tr><th>Admission no.</th><th>Student name</th><th>Class</th><th>Guardian</th><th>Status</th><th class="accounts-only">Action</th></tr></thead><tbody id="studentRows"></tbody></table></div>
+      </div>
+    </section>
+    <section id="tab-meals" class="tab-pane hidden">
+      <div class="panel"><div class="panel-heading"><div><h2>Meal expenditure</h2><p class="muted">Default allowance: ₹6.78 per student per day</p></div><button class="button export-btn" data-export="meals">Export CSV</button></div>
+        <form id="mealForm" class="form-grid editor accounts-only"><label>Date<input name="record_date" type="date" required></label><label>Students served<input name="student_count" type="number" min="0" step="1" required></label><label>Rate per student (₹)<input name="rate_per_student" type="number" min="0" step=".01" value="6.78" required></label><label>Calculated total<input id="mealTotal" value="₹0.00" readonly></label><label class="full">Notes<input name="notes"></label><button class="button primary" type="submit">Save meal record</button></form>
+        <div class="table-wrap"><table><thead><tr><th>Date</th><th>Students</th><th>Rate</th><th>Total</th><th>Notes</th></tr></thead><tbody id="mealRows"></tbody></table></div>
+      </div>
+    </section>
+    <section id="tab-reports" class="tab-pane hidden">
+      <div class="panel"><h2>Reports & backup</h2><p class="muted">CSV files open in Excel or similar spreadsheet software. Use your browser's print dialog to save a page as PDF.</p>
+        <div class="report-grid"><button class="button export-btn" data-export="cashbook">Cash book CSV</button><button class="button export-btn" data-export="vouchers">Vouchers CSV</button><button class="button export-btn" data-export="students">Students CSV</button><button class="button export-btn" data-export="meals">Meal records CSV</button><button id="backupBtn" class="button primary admin-only">Download full JSON backup</button><button class="button" onclick="window.print()">Print / Save PDF</button></div>
+        <p class="small warning">Store backup files securely. The JSON backup is an export file, not an automatic restore tool. Protect student and account information.</p>
+      </div>
+    </section>
+    <section id="tab-users" class="tab-pane hidden">
+      <div class="panel"><h2>Create authorised user</h2><p class="muted">Only administrators can create accounts.</p>
+        <form id="userForm" class="form-grid editor"><label>Display name<input name="displayName" required></label><label>Username<input name="username" required></label><label>Temporary password (12+ characters)<input name="password" type="password" minlength="12" required></label><label>Role<select name="role"><option value="accounts">Accounts staff</option><option value="viewer">Read-only viewer</option><option value="admin">Administrator</option></select></label><button class="button primary" type="submit">Create user</button></form>
+      </div>
+    </section>
+  </section>
+</main>
+<footer><span>Baramao LP School</span><span>Authorised use only</span></footer>
+<script src="/app.js"></script>
+</body></html>
